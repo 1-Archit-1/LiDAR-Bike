@@ -1,0 +1,6 @@
+# Ignore data folder
+data_q123
+lidar_overlay
+synchronized_data.json
+data_extraction.py
+*.pyc
