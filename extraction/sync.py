@@ -2,6 +2,9 @@ import numpy as np
 import pandas as pd
 from scipy.interpolate import interp1d
 pd.set_option('display.precision', 13)
+from config import get_logger
+
+logger = get_logger(__name__)
 
 def find_reference(sensor_timestamps:dict) -> tuple:
     """ Find reference sensor based on slowest framerate """
@@ -26,18 +29,16 @@ def find_closest(sensor_timestamps:dict, ref_timestamps:np.array) -> np.array:
     return closest
 
 def align_sensor_data(
-        avg_gap_ref:float, 
-        sensor_timestamps:dict, 
+        avg_gap_ref:float,
         sensor_df:pd.DataFrame, 
         ref_timestamps:np.array, 
         sensor_type:str
     )->pd.DataFrame:
     
-    avg_gap_sensor = np.mean(np.diff(sensor_df["timestamp"].values))
+    avg_gap_sensor = np.mean(np.diff(sensor_df["timestamp"].values[:min(200, len(sensor_df))]))
 
-    if avg_gap_sensor > avg_gap_ref:  # Interpolate if too sparse
-        print(f"Interpolating {sensor_type} data")
-
+    if avg_gap_sensor > avg_gap_ref:  # Interpolate if too sparse, mostly for GPS
+        logger.info(f"Interpolating {sensor_type} data")
         interp_func = interp1d(
             sensor_df["timestamp"], 
             sensor_df.drop(columns=["timestamp"]).values, 
@@ -49,18 +50,24 @@ def align_sensor_data(
         return pd.DataFrame(interpolated_values, columns=sensor_df.columns[1:], index=ref_timestamps).reset_index().rename(columns={"index": "timestamp"})
     
     else:
-        print(f"Using original {sensor_type} data")
+        logger.info(f"Using original {sensor_type} data")
         closest_timestamps = find_closest(sensor_df["timestamp"].values, ref_timestamps)
 
         aligned_sensor_df = sensor_df.set_index("timestamp").loc[closest_timestamps].reset_index()
         aligned_sensor_df["timestamp"] = ref_timestamps
 
         #ensure aligned
-        aligned_sensor_df = aligned_sensor_df.set_index("timestamp").reindex(ref_timestamps).reset_index()    
+        #aligned_sensor_df = aligned_sensor_df.set_index("timestamp").reindex(ref_timestamps).reset_index()    
         return aligned_sensor_df
         
 
-def synchronize_data(lidar_data:dict,image_data:dict, imu_df:pd.DataFrame, gps_df:pd.DataFrame) -> list:
+def synchronize_data(
+        lidar_data:dict,
+        image_data:dict, 
+        imu_df:pd.DataFrame, 
+        gps_df:pd.DataFrame
+    ) -> list:
+
     """ Synchronizes all sensor data based on the slowest frame rate. """
     
     sensor_timestamps = {
@@ -69,11 +76,7 @@ def synchronize_data(lidar_data:dict,image_data:dict, imu_df:pd.DataFrame, gps_d
         "imu": imu_df["timestamp"].values,
         "gps": gps_df["timestamp"].values
     }
-    print(imu_df)
     reference_sensor, reference_timestamps, avg_gap_ref = find_reference(sensor_timestamps)
-
-    # print('no of imu before:', imu_df.shape[0])
-    # print('no of gps before:', gps_df.shape[0])
 
     lidar_df = pd.DataFrame(list(lidar_data.items()), columns=["timestamp", "lidar"])
     image_df = pd.DataFrame(list(image_data.items()), columns=["timestamp", "image"])
@@ -81,7 +84,6 @@ def synchronize_data(lidar_data:dict,image_data:dict, imu_df:pd.DataFrame, gps_d
     if reference_sensor == "lidar":
         image_df = align_sensor_data(
             avg_gap_ref,
-            sensor_timestamps,
             image_df,
             reference_timestamps,
             "image"
@@ -89,27 +91,22 @@ def synchronize_data(lidar_data:dict,image_data:dict, imu_df:pd.DataFrame, gps_d
     else:    
         lidar_df = align_sensor_data(
             avg_gap_ref,
-            sensor_timestamps,
             lidar_df,
             reference_timestamps,
             "lidar",
         )
     imu_df = align_sensor_data(
         avg_gap_ref,
-        sensor_timestamps,
         imu_df,
         reference_timestamps,
         "imu",
     )
     gps_df = align_sensor_data(
         avg_gap_ref,
-        sensor_timestamps,
         gps_df,
         reference_timestamps,
         "gps"
     )
-    print('no of imu after:', imu_df.shape[0])
-    print('no of gps after:', gps_df.shape[0])
 
     reference_df = image_df if reference_sensor == "image" else lidar_df
     sensor_to_merge = image_df if reference_sensor == "lidar" else lidar_df

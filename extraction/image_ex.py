@@ -20,7 +20,7 @@ def read_images_from_folder(folder_path:str, image_parsed_path:str)->dict:
         os.makedirs(out_dir, exist_ok=True)
 
         for filename in os.listdir(folder_path):
-            if filename.endswith('.bin') and filename.startswith('image_'):  # Assuming the files have a .bin extension
+            if filename.endswith('.bin') and filename.startswith('image_'):
                 file_path = os.path.join(folder_path, filename)
                 timestamp = extract_timestamp(filename, 'image')
                 #image_timestamps.append(timestamp)

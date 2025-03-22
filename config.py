@@ -1,4 +1,7 @@
 from pydantic_settings import BaseSettings
+import logging
+import os
+
 class Settings(BaseSettings):
 
     #API 1 subdirectories
@@ -23,4 +26,17 @@ class Settings(BaseSettings):
         case_sensitive = True
 
 settings = Settings(_env_file=".env")
+
+def get_logger(name=''):
+    logger = logging.getLogger(name)
+    os.makedirs('logs', exist_ok=True)
+    logger.setLevel(logging.INFO)
+    formatter = logging.Formatter(
+            "[%(asctime)s] — %(name)s — %(levelname)s — %(funcName)s:%(lineno)d — %(message)s"
+    )
+    file_handler = logging.FileHandler('logs/debug.log', encoding='utf-8')
+    file_handler.setFormatter(formatter) 
+    logger.addHandler(file_handler)
+    return logger
+    
 
