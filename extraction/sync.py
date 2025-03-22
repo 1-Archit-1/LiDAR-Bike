@@ -3,7 +3,7 @@ import pandas as pd
 from scipy.interpolate import interp1d
 pd.set_option('display.precision', 13)
 from config import get_logger
-
+import time
 logger = get_logger(__name__)
 
 def find_reference(sensor_timestamps:dict) -> tuple:
@@ -69,7 +69,7 @@ def synchronize_data(
     ) -> list:
 
     """ Synchronizes all sensor data based on the slowest frame rate. """
-    
+    t = time.time()
     sensor_timestamps = {
         "lidar": np.array(list(lidar_data.keys())),
         "image": np.array(list(image_data.keys())),
@@ -118,5 +118,6 @@ def synchronize_data(
         .merge(gps_df, on="timestamp", how="left")
     )
     synchronized_data = synchronized_df.to_dict(orient="records")
+    logger.info("Synchronization completed in %s", time.time() - t)
     return synchronized_data
 

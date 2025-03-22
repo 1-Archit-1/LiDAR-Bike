@@ -8,7 +8,6 @@ fonttools==4.56.0
 h11==0.14.0
 idna==3.10
 kiwisolver==1.4.8
-matplotlib==3.10.1
 numpy==2.2.3
 opencv-python==4.11.0.86
 packaging==24.2
