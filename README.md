@@ -27,9 +27,42 @@ Start the server using Uvicorn:
 uvicorn main:app --host 0.0.0.0 --port 8000
 ```
 
-### API Documentation
-Once the server is running, you can access the API documentation at:
-- **Swagger UI:** [http://localhost:8000/docs](http://localhost:8000/docs)
+## **API Documentation**
+
+Once the server is running, you can access the API documentation and interact with the endpoints using the following tools:
+
+- **Swagger UI**: [http://localhost:8000/docs](http://localhost:8000/docs)
+
+This interactive interface allows you to explore and test the available APIs.
+
+---
+
+### **API Endpoints**
+
+#### 1. **Extracting and Transforming Data**
+This endpoint is used to synchronize sensor data by extracting and transforming it from the provided directory.
+
+- **Endpoint**:  
+  `GET http://localhost:8000/synchronize-sensor`
+
+- **Query Parameters**:
+  - `folder_path` (string, required): The path to the directory containing the sensor data (e.g., LiDAR and camera data).
+
+- **Example Request**:
+  ```bash
+  curl "http://localhost:8000/synchronize-sensor?folder_path=/path/to/data"
+#### 2. **Projecting LiDAR Points on Image**
+This endpoint projects 3D LiDAR points onto a specific frame of the camera image.
+
+- **Endpoint**:  
+  `GET http://localhost:8000/project-lidar`
+
+- **Query Parameters**:
+  - `frame_number` (integer, required): The frame number of the image onto which the LiDAR points will be projected.
+
+- **Example Request**:
+  ```bash
+  curl "http://localhost:8000/project-lidar?frame_number=5"
 
 ## Configuration
 
