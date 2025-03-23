@@ -64,8 +64,8 @@ def visualize_lidar_on_image(frame_number:str)->str:
     #Overlay on image
     for (u, v), color in zip(points_2d, colors):
         if 0 <= u < image.shape[1] and 0 <= v < image.shape[0]:
-            #cv2.circle(image, (int(u), int(v)), 1, (0, 255, 255-int(color)), 1)  #Color based on reflectance
-            cv2.line(image, (int(u), int(v)), (int(u), int(v)), (0, 255, 255 - int(color)), 1)
+            #cv2.circle(image, (int(u), int(v)), 1, (255, 255, 255-int(color)), 1)  #Color based on reflectance
+            cv2.line(image, (int(u), int(v)), (int(u), int(v)), (255, 255, 255 - int(color)), 1)
     
     os.makedirs(settings.BONUS_OUT_DIR, exist_ok=True)
     output_path =settings.BONUS_OUT_DIR + f"/output_{frame_number}.png"
