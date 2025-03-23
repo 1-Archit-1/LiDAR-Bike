@@ -58,7 +58,7 @@ This endpoint projects 3D LiDAR points onto a specific frame of the camera image
   `GET http://localhost:8000/project-lidar`
 
 - **Query Parameters**:
-  - `frame_number` (integer, required): The frame number of the image onto which the LiDAR points will be projected.
+  - `frame_number` (string, required): The frame number of the image onto which the LiDAR points will be projected.
 
 - **Example Request**:
   ```bash
