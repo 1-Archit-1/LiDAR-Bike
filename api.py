@@ -49,8 +49,8 @@ async def extract_synchronize(folder_path: str = None):
         logger.info('Synchronizing data')
         data = synchronize_data(lidar_dict,image_dict, imu_data, gps_data)
         # writing synchronized data to a file
-        with open(settings.SYNC_DATA_OUT_PATH, 'w') as f:
-            json.dump(data, f, indent=4)
+        # with open(settings.SYNC_DATA_OUT_PATH, 'w') as f:
+        #     json.dump(data, f, indent=4)
         
         return {"message": "Data synchronized", 'success': True, 'data': data}
     
