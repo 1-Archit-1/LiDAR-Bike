@@ -24,7 +24,7 @@ def process_file(filename, folder_path, lidar_parsed_path):
         return timestamp, out_file_path
     return None
 
-def read_lidar_folder_to_dict(folder_path: str, lidar_parsed_path: str) -> dict:
+def read_lidar_from_folder(folder_path: str, lidar_parsed_path: str) -> dict:
     """
     Reads all LiDAR files in parallel, saves them as .npy files,
     returns a dict mapping timestamps to file path.
@@ -53,7 +53,7 @@ def read_lidar_folder_to_dict(folder_path: str, lidar_parsed_path: str) -> dict:
         logger.error(f"Error processing Lidar at {folder_path}: {e}")
         raise
 
-def read_lidar_folder_to_dict2(folder_path:str, lidar_parsed_path:str )->dict:
+def read_lidar_from_folder_sequential(folder_path:str, lidar_parsed_path:str )->dict:
     t = time.time()
     try:
         logger.info(f"Reading Lidar data at timestamp: {t}")

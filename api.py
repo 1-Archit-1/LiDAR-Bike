@@ -1,5 +1,5 @@
 from fastapi.routing import APIRouter
-from extraction.lidar_ex import read_lidar_folder_to_dict
+from extraction.lidar_ex import read_lidar_from_folder
 from extraction.image_ex import read_images_from_folder
 from extraction.imu_gps import read_imu, read_gps
 from extraction.sync import synchronize_data
@@ -35,7 +35,7 @@ async def extract_synchronize(folder_path: str = None):
 
     try:
         logger.info(f'API synchronize-sensor called with: {folder_path} \nCreating Lidar parsed output')
-        lidar_dict = read_lidar_folder_to_dict(lidar_path, lidar_parsed_path)
+        lidar_dict = read_lidar_from_folder(lidar_path, lidar_parsed_path)
         
         logger.info('Creating Image parsed output')
         image_dict = read_images_from_folder(image_path, image_parsed_path)
