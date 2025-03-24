@@ -6,6 +6,7 @@ from extraction.sync import synchronize_data
 from config import settings, get_logger
 from projection.calibrate import visualize_lidar_on_image
 import json
+import traceback
 
 router = APIRouter()
 logger = get_logger(__name__)
@@ -19,6 +20,7 @@ async def calibrate_and_project_lidar(frame_number:str):
         return {"message": "LiDAR points projected onto the image", 'success': True, 'data': {'output_image': output_path}}
     except FileNotFoundError as e:
         msg = "\nFrame number should be a numeric string , e.g: 0,1,2\n and file should be named as a 0 padded 10 digit numeric string"
+        logger.info(f'Error: {traceback.format_exc()}')
         return {"message": str(e)+ msg, 'success': False}
     except Exception as e:
         return {"message": str(e), 'success': False}
@@ -55,4 +57,5 @@ async def extract_synchronize(folder_path: str = None):
         return {"message": "Data synchronized", 'success': True, 'data': data}
     
     except Exception as e:
+        logger.info(f'Error: {traceback.format_exc()}')
         return {"message": str(e), 'success': False}

@@ -11,8 +11,8 @@ class Settings(BaseSettings):
     GPS_PATH: str = '/gps.txt'
 
     #API2 bonus data directories
-    BONUS_IMAGE_DIR: str = 'data_bonus/image_02'
-    BONUS_LIDAR_DIR: str = 'data_bonus/lidar'
+    BONUS_IMAGE_DIR: str = 'data_bonus/image_02/data/'
+    BONUS_LIDAR_DIR: str = 'data_bonus/lidar/data/'
     CALIB_VELO_TO_CAM: str = 'data_bonus/calib/calib_velo_to_cam.txt'
     CALIB_CAM_TO_CAM: str = 'data_bonus/calib/calib_cam_to_cam.txt'
 
