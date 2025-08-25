@@ -1,6 +1,6 @@
 # Smart Bike Sensor Data Server
 
-This repository contains a server designed to parse, extract, and calibrate data from various sensors on a smart bike, including:
+This repository contains a server designed to parse, extract, and calibrate data from various sensors on a smart bike built by the Georgia Tech Smart Cities Lab, including:
 
 - **Cameras**
 - **LiDAR**
